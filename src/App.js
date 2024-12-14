@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import "./css/noAutoriz.css"
+import {createBrowserRouter, createRoutesFromElements, RouterProvider, Route} from "react-router-dom";
+import Authorization from "./components/Authorization";
+import Registration from "./components/Registration";
+import Flats from "./components/Flats";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const router = createBrowserRouter(
+    createRoutesFromElements(
+        <Route>
+            <Route path="/" element={<Authorization />} />
+            <Route path="registration" element={<Registration />} />
+            <Route element={<ProtectedRoutes/>}>
+                <Route path="/flats" element={<Flats />} />
+            </Route>
+        </Route>
+    )
+)
+
+const App = () => {
+
+    return (
+        <RouterProvider router={router}/>
+    )
 }
 
-export default App;
+export default App

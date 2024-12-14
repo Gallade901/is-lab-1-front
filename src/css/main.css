@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: aquamarine;
+    font-family: Arial, sans-serif;
+}
+
+.flats {
+    margin-top: 10px;
+}
+
+.buttons-menu button {
+    padding: 10px;
+    margin-right: 10px;
+    border: 0;
+    flex-grow: 1;
+    background-color: azure;
+}
+
+.buttons-menu {
+    display: flex;
+    gap: 10px;
+}
+.buttons-menu button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+
+.flats-table-wr {
+    max-width: 100%;
+    overflow-x: auto; /* Добавляем горизонтальную прокрутку */
+    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.flats-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.flats-table th, .flats-table td {
+    border: 1px solid azure;
+    padding: 8px;
+}
+
+.flats-table th {
+    background-color: azure;
+    text-align: left;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header button,
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.header {
+    color: azure;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: cadetblue;
+}
+
+.right {
+    display: flex;
+    gap: 10px; /* Расстояние между элементами */
+    align-items: center;
+}
+
+
+.form-flat {
+    margin-top: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-add-flat {
+    width: 50%;
+}
+
+.form-add-flat input:not([type="checkbox"]),
+.form-add-flat select,
+.form-add-flat button {
+    padding: 7px;
+    width: 100%;
+    margin-bottom: 7px;
+    border: 0;
+    background-color: azure;
+    outline: none;
+}
+
+.form-add-flat input[type="checkbox"] {
+    margin-bottom: 7px;
+    transform: scale(1.2);
+    margin-left: 12px;
+}
+
+
+.form-add-flat button:hover {
+    transform: scale(1.005);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
