@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoutes = () => {
+const PublicRoutes = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
-    const [loading, setLoading] = useState(true); // Для индикатора загрузки
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const checkSession = async () => {
@@ -26,7 +26,7 @@ const ProtectedRoutes = () => {
                 console.error("Ошибка проверки авторизации:", error);
                 setIsAuthenticated(false);
             } finally {
-                setLoading(false); // Завершение загрузки
+                setLoading(false);
             }
         };
 
@@ -37,11 +37,11 @@ const ProtectedRoutes = () => {
         return <div>Loading...</div>;
     }
 
-    if (!isAuthenticated) {
-        return <Navigate to="/" replace />;
+    if (isAuthenticated) {
+        return <Navigate to="/flats" replace />;
     }
 
     return <Outlet />;
 };
 
-export default ProtectedRoutes;
+export default PublicRoutes;

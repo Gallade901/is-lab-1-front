@@ -39,7 +39,7 @@ const Authorization = () => {
                 setServerResponse("Неверный логин или пароль");
             }
             else {
-                setServerResponse("Ошибка регистрации");
+                setServerResponse("Ошибка авторизации");
             }
         } catch (error) {
             console.error('Ошибка:', error);

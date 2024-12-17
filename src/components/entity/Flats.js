@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useTable, usePagination } from 'react-table';
-import HeaderApp from "./HeaderApp"
+import HeaderApp from "../HeaderApp"
 
 const Flats = () => {
     const data = useMemo(() => [
@@ -41,7 +41,7 @@ const Flats = () => {
             house_numberOfFloors: 5,
         },
 
-        // Добавьте сюда другие объекты flats
+
     ], []);
 
     const columns = useMemo(() => [
@@ -76,7 +76,7 @@ const Flats = () => {
         state,
         prepareRow,
     } = useTable(
-        { columns, data, initialState: { pageIndex: 0, pageSize: 10 } }, // initialState pageSize = 2 для демонстрации
+        { columns, data, initialState: { pageIndex: 0, pageSize: 10 } },
         usePagination
     );
 
