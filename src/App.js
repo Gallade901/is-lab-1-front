@@ -7,6 +7,8 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 import PublicRoutes from "./utils/PublicRoutes";
 import ApplicationsAdmin from "./components/ApplicationsAdmin";
 import AddFlat from "./components/entity/AddFlat";
+import AddHouse from "./components/entity/AddHouse";
+import AddCoordinate from "./components/entity/AddCoordinate";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -19,6 +21,8 @@ const router = createBrowserRouter(
                 <Route path="/applications" element={<ApplicationsAdmin />} />
                 <Route path="/flats" element={<Flats />} />
                 <Route path="/addFlat" element={<AddFlat/>}/>
+                <Route path="/addHouse" element={<AddHouse/>}/>
+                <Route path="addCoordinate" element={<AddCoordinate/>}/>
             </Route>
         </Route>
     )

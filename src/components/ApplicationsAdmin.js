@@ -6,7 +6,7 @@ const ApplicationsAdmin = () => {
     const fetchApplications = async () => {
         try {
             const response = await fetch(
-                "http://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/api/controller/applications",
+                `${process.env.REACT_APP_BASE_URL}/user/applications`,
                 {
                     method: "GET",
                     credentials: "include",
@@ -27,7 +27,7 @@ const ApplicationsAdmin = () => {
     const answerApplication = async (login, flag) => {
         try {
             const response = await fetch(
-                "http://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/api/controller/answerApplication",
+                `${process.env.REACT_APP_BASE_URL}/user/answerApplication`,
                 {
                     method: "POST",
                     headers: {

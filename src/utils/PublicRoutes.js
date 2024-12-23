@@ -9,7 +9,7 @@ const PublicRoutes = () => {
         const checkSession = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/api/controller/checkAuthorization",
+                    `${process.env.REACT_APP_BASE_URL}/user/checkAuthorization`,
                     {
                         method: "GET",
                         credentials: "include",
@@ -17,8 +17,7 @@ const PublicRoutes = () => {
                 );
 
                 if (response.ok) {
-                    const isAuthorized = await response.json();
-                    setIsAuthenticated(isAuthorized);
+                    setIsAuthenticated(true)
                 } else {
                     setIsAuthenticated(false);
                 }

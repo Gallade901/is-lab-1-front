@@ -1,59 +1,403 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import HeaderApp from "../HeaderApp";
 
-class AddFlat extends React.Component {
-    flat = this.props.flat
-    render() {
-        return (
-            <div>
-                <HeaderApp/>
-                <div className="form-flat">
-                    <form className="form-add-flat">
-                        <input placeholder="name"/>
-                        <input placeholder="Coordinate-x"/>
-                        <input placeholder="Coordinate-y"/>
-                        <input type="Number" placeholder="area"/>
-                        <input type="Number" placeholder="price"/>
-                        <label htmlFor="balcony">Balcony:</label>
-                        <input type="checkbox" id="balcony" name="balcony"/>
-                        <br/>
-                        <input type="Number" placeholder="timeToMetroOnFoot"/>
-                        <input type="Number" placeholder="numberOfRooms"/>
+const AddFlat = () => {
+    const login = localStorage.getItem("login");
+    const [formData, setFormData] = useState({
+        name: "",
+        coordinatesId: 0,
+        coordinateX: "",
+        coordinateY: "",
+        area: "",
+        price: "",
+        balcony: false,
+        timeToMetroOnFoot: "",
+        numberOfRooms: "",
+        furnish: null,
+        view: null,
+        transport: "",
+        houseId: 0,
+        houseName: "",
+        houseYear: "",
+        houseNumberOfFloors: "",
+        login: login,
+    });
 
-                        <label htmlFor="furnish">Furnish:</label>
-                        <select id="furnish" name="furnish">
-                            <option value="DESIGNER">Designer</option>
-                            <option value="NONE">None</option>
-                            <option value="FINE">Fine</option>
-                            <option value="LITTLE">Little</option>
-                        </select>
+    const [housesData, setHousesData] = useState();
+    const [coordinatesData, setCoordinatesData] = useState();
 
-                        <label htmlFor="view">View:</label>
-                        <select id="view" name="view">
-                            <option value="YARD">Yard</option>
-                            <option value="PARK">Park</option>
-                            <option value="TERRIBLE">Terrible</option>
-                        </select>
+    const [errors, setErrors] = useState({});
+    const [serverResponse, setServerResponse] = useState("");
 
-                        <label htmlFor="transport">Transport:</label>
-                        <select id="transport" name="transport">
-                            <option value="FEW">Few</option>
-                            <option value="NONE">None</option>
-                            <option value="LITTLE">Little</option>
-                            <option value="NORMAL">Normal</option>
-                            <option value="ENOUGH">Enough</option>
-                        </select>
-
-                        <input placeholder="House-name"/>
-                        <input type="Number" placeholder="House-year"/>
-                        <input type="Number" placeholder="House-numberOfFloors"/>
-
-                        <button type="button">Добавить</button>
-                    </form>
-                </div>
-            </div>
+    useEffect(() => {
+        fetch(
+            `${process.env.REACT_APP_BASE_URL}/house`,
+        {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
         )
-    }
-}
+            .then((response) => response.json())
+            .then((data) => {
+                setHousesData(data);
+            })
+            .catch((error) =>
+                console.error("Ошибка при загрузке данных:", error)
+            );
+        fetch(
+            `${process.env.REACT_APP_BASE_URL}/coordinates`,
+        {
+            method: 'GET',
+            headers: {
+                    'Content-Type': 'application/json',
+            }
+        }
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                setCoordinatesData(data);
+            })
+            .catch((error) =>
+                console.error("Ошибка при загрузке данных:", error)
+            );
+    }, []);
 
-export default AddFlat
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+
+        setFormData({
+            ...formData,
+            [name]: type === "checkbox" ? checked : value,
+        });
+    };
+
+    const validateForm = () => {
+        const validationErrors = {};
+
+        if (!formData.name.trim())
+            validationErrors.name = "Имя не может быть пустым";
+
+        if (!formData.coordinates && (!formData.coordinateX || !formData.coordinateY)) {
+            validationErrors.coordinates =
+                "Выберите существующие координаты или введите новые";
+        }
+        if (
+            formData.coordinateY &&
+            (formData.coordinateY < 0 || formData.coordinateY > 965)
+        ) {
+            validationErrors.coordinateY = "Y должен быть от 0 до 965";
+        }
+
+        if (!formData.area || formData.area <= 0 || formData.area > 521) {
+            validationErrors.area = "Площадь должна быть от 1 до 521";
+        }
+
+        if (!formData.price || formData.price <= 0 || formData.price > 648728965) {
+            validationErrors.price = "Цена должна быть от 1 до 648728965";
+        }
+
+        if (!formData.timeToMetroOnFoot || formData.timeToMetroOnFoot <= 0) {
+            validationErrors.timeToMetroOnFoot =
+                "Время до метро должно быть больше 0";
+        }
+
+        if (
+            !formData.numberOfRooms ||
+            formData.numberOfRooms <= 0 ||
+            formData.numberOfRooms > 11
+        ) {
+            validationErrors.numberOfRooms =
+                "Количество комнат должно быть от 1 до 11";
+        }
+
+        if (!formData.transport) {
+            validationErrors.transport = "Транспорт должен быть выбран";
+        }
+
+        if (!formData.house && (!formData.houseName || !formData.houseYear)) {
+            validationErrors.house =
+                "Выберите существующий дом или введите данные нового";
+        }
+
+        if (formData.houseYear && (formData.houseYear <= 0 || formData.houseYear > 681)) {
+            validationErrors.houseYear = "Год дома должен быть от 1 до 681";
+        }
+
+        if (
+            formData.houseNumberOfFloors &&
+            (formData.houseNumberOfFloors <= 0 ||
+                formData.houseNumberOfFloors > 80)
+        ) {
+            validationErrors.houseNumberOfFloors =
+                "Этажей в доме должно быть от 1 до 80";
+        }
+
+        setErrors(validationErrors);
+        return Object.keys(validationErrors).length === 0;
+    };
+
+    const [isNewHouse, setIsNewHouse] = useState(true);
+    const [isNewCoordinate, setIsNewCoordinate] = useState(true);
+
+    const handleHouseChange = (e) => {
+        const selectedHouseId = e.target.value;
+        if (selectedHouseId === "") {
+            setIsNewHouse(true);
+            setFormData({
+                ...formData,
+                houseId: "",
+                houseName: "",
+                houseYear: "",
+                houseNumberOfFloors: "",
+            });
+        } else {
+            let selectedHouse;
+            if (Array.isArray(housesData)) {
+                selectedHouse = housesData.find(
+                    house => house.id === parseInt(selectedHouseId)
+                );
+            }
+            setFormData({
+                ...formData,
+                houseId: selectedHouse?.id,
+                houseName: selectedHouse?.name,
+                houseYear: selectedHouse?.year,
+                houseNumberOfFloors: selectedHouse?.numberOfFloors,
+            });
+            setIsNewHouse(false);
+        }
+    };
+
+    const handleCoordinateChange = (e) => {
+        const selectedCoordinateId = e.target.value;
+        if (selectedCoordinateId === "") {
+            setIsNewCoordinate(true);
+            setFormData({
+                ...formData,
+                coordinatesId: "",
+                coordinateX: "",
+                coordinateY: "",
+            });
+        } else {
+            let selectedCoordinate;
+            if (Array.isArray(coordinatesData)) {
+                selectedCoordinate = coordinatesData.find(
+                    (coordinates) => coordinates.id === parseInt(selectedCoordinateId)
+                );
+            }
+            setFormData({
+                ...formData,
+                coordinatesId: selectedCoordinate?.id,
+                coordinateX: selectedCoordinate?.x,
+                coordinateY: selectedCoordinate?.y,
+            });
+            setIsNewCoordinate(false);
+        }
+    };
+
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (!validateForm()) return;
+
+        try {
+            const response = await fetch(
+                `${process.env.REACT_APP_BASE_URL}/flat`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                }
+            );
+
+            if (response.ok) {
+                const result = await response.text();
+                setServerResponse(result);
+            } else {
+                setServerResponse("Ошибка отправки");
+            }
+        } catch (error) {
+            console.error("Ошибка:", error);
+            alert("Произошла ошибка при отправке запроса");
+        }
+    };
+
+    return (
+        <div>
+            <HeaderApp />
+            <div className="add-component">
+                <form className="form-add" onSubmit={handleSubmit}>
+                    <input
+                        name="name"
+                        placeholder="Имя"
+                        value={formData.name}
+                        onChange={handleChange}
+                    />
+                    {errors.name && <div className="error-field">{errors.name}</div>}
+
+                    <select
+                        name="coordinates"
+                        value={formData.coordinatesId}
+                        onChange={handleCoordinateChange}
+                    >
+                        <option value={0}>Создать координаты</option>
+                        {coordinatesData?.map((coordinates) => (
+                            <option key={coordinates.id} value={coordinates.id}>
+                                {coordinates.id}-({coordinates.x}, {coordinates.y})
+                            </option>
+                        ))}
+                    </select>
+                    <input
+                        name="coordinateX"
+                        placeholder="Координата X"
+                        value={formData.coordinateX}
+                        onChange={handleChange}
+                        disabled={!isNewCoordinate}
+                    />
+                    <input
+                        name="coordinateY"
+                        placeholder="Координата Y"
+                        value={formData.coordinateY}
+                        onChange={handleChange}
+                        disabled={!isNewCoordinate}
+                    />
+                    {errors.coordinates && (
+                        <div className="error-field">{errors.coordinates}</div>
+                    )}
+
+                    <input
+                        name="area"
+                        type="number"
+                        placeholder="Площадь"
+                        value={formData.area}
+                        onChange={handleChange}
+                    />
+                    {errors.area && <div className="error-field">{errors.area}</div>}
+
+                    <input
+                        name="price"
+                        type="number"
+                        placeholder="Цена"
+                        value={formData.price}
+                        onChange={handleChange}
+                    />
+                    {errors.price && <div className="error-field">{errors.price}</div>}
+
+                    <label>
+                        <input
+                            name="balcony"
+                            type="checkbox"
+                            checked={formData.balcony}
+                            onChange={handleChange}
+                        />
+                        Есть балкон
+                    </label>
+
+                    <input
+                        name="timeToMetroOnFoot"
+                        type="number"
+                        placeholder="Время до метро (минуты)"
+                        value={formData.timeToMetroOnFoot}
+                        onChange={handleChange}
+                    />
+                    {errors.timeToMetroOnFoot && (
+                        <div className="error-field">
+                            {errors.timeToMetroOnFoot}
+                        </div>
+                    )}
+
+                    <input
+                        name="numberOfRooms"
+                        type="number"
+                        placeholder="Количество комнат"
+                        value={formData.numberOfRooms}
+                        onChange={handleChange}
+                    />
+                    {errors.numberOfRooms && (
+                        <div className="error-field">{errors.numberOfRooms}</div>
+                    )}
+
+                    <select
+                        name="furnish"
+                        value={formData.furnish}
+                        onChange={handleChange}
+                    >
+                        <option value={null}>Выбрать отделку</option>
+                        <option value="DESIGNER">Дизайнерская</option>
+                        <option value="NONE">Без отделки</option>
+                        <option value="FINE">Хорошая</option>
+                        <option value="LITTLE">Умеренная</option>
+                    </select>
+
+                    <select name="view" value={formData.view} onChange={handleChange}>
+                        <option value={null}>Выбрать вид</option>
+                        <option value="YARD">На двор</option>
+                        <option value="PARK">На парк</option>
+                        <option value="TERRIBLE">Ужасный</option>
+                    </select>
+
+                    <select
+                        name="transport"
+                        value={formData.transport}
+                        onChange={handleChange}
+                    >
+                        <option value="">Выбрать транспорт</option>
+                        <option value="FEW">Мало</option>
+                        <option value="NONE">Нет</option>
+                        <option value="LITTLE">Немного</option>
+                        <option value="NORMAL">Нормально</option>
+                        <option value="ENOUGH">Достаточно</option>
+                    </select>
+                    {errors.transport && (
+                        <div className="error-field">{errors.transport}</div>
+                    )}
+
+                    <select name="house" onChange={handleHouseChange} value={formData.houseId}>
+                        <option value={0}>Создать новый дом</option>
+                        {housesData?.map((house) => (
+                            <option key={house.id} value={house.id}>
+                                {house.id + "-" + house.name || "Без названия"}
+                            </option>
+                        ))}
+                    </select>
+                    <input
+                        name="houseName"
+                        placeholder="Имя дома"
+                        value={formData.houseName}
+                        onChange={handleChange}
+                        disabled={!isNewHouse}
+                    />
+                    <input
+                        name="houseYear"
+                        type="number"
+                        placeholder="Год постройки"
+                        value={formData.houseYear}
+                        onChange={handleChange}
+                        disabled={!isNewHouse}
+                    />
+                    <input
+                        name="houseNumberOfFloors"
+                        type="number"
+                        placeholder="Этажей в доме"
+                        value={formData.houseNumberOfFloors}
+                        onChange={handleChange}
+                        disabled={!isNewHouse}
+                    />
+                    {errors.house && (
+                        <div className="error-field">{errors.house}</div>
+                    )}
+
+                    <button type="submit">Добавить</button>
+                    <div>{serverResponse}</div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default AddFlat;

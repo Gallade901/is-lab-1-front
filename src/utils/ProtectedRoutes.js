@@ -9,7 +9,7 @@ const ProtectedRoutes = () => {
         const checkSession = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/api/controller/checkAuthorization",
+                    `${process.env.REACT_APP_BASE_URL}/user/checkAuthorization`,
                     {
                         method: "GET",
                         credentials: "include",
@@ -17,8 +17,9 @@ const ProtectedRoutes = () => {
                 );
 
                 if (response.ok) {
-                    const isAuthorized = await response.json();
-                    setIsAuthenticated(isAuthorized);
+                    const isAuthorized = await response.text();
+                    setIsAuthenticated(true)
+                    localStorage.setItem("login", isAuthorized)
                 } else {
                     setIsAuthenticated(false);
                 }

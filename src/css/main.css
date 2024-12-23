@@ -99,20 +99,20 @@ body {
 }
 
 
-.form-flat {
+.add-component {
     margin-top: 7px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.form-add-flat {
+.form-add {
     width: 50%;
 }
 
-.form-add-flat input:not([type="checkbox"]),
-.form-add-flat select,
-.form-add-flat button {
+.form-add input:not([type="checkbox"]),
+.form-add select,
+.form-add button {
     padding: 7px;
     width: 100%;
     margin-bottom: 7px;
@@ -121,14 +121,17 @@ body {
     outline: none;
 }
 
-.form-add-flat input[type="checkbox"] {
+.form-add input[type="checkbox"] {
     margin-bottom: 7px;
     transform: scale(1.2);
     margin-left: 12px;
 }
 
-
-.form-add-flat button:hover {
+.form-add button:hover {
     transform: scale(1.005);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.error-field {
+    color: red;
 }

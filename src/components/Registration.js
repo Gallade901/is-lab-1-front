@@ -37,7 +37,7 @@ class Registration extends React.Component {
         };
 
         try {
-            const response = await fetch('http://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/api/controller/registration', {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/user/registration`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

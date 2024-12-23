@@ -2,14 +2,14 @@ import React from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 
 const HeaderApp = () => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("login");
     const navigate = useNavigate();
     const location = useLocation();
 
     const handleLogout = async () => {
         try {
             const response = await fetch(
-                "http://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/api/controller/logout",
+                `${process.env.REACT_APP_BASE_URL}/user/logout`,
                 {
                     method: "POST",
                     credentials: "include",
@@ -41,7 +41,7 @@ const HeaderApp = () => {
                     <option value="/flats">Квартиры</option>
                     <option value="/addFlat">Добавить квартиру</option>
                     <option value="/applications">Заявки</option>
-                    <option value="/coordinates">Добавить координаты</option>
+                    <option value="/addCoordinate">Добавить координаты</option>
                     <option value="/addHouse">Добавить дом</option>
                 </select>
             </div>

@@ -22,9 +22,8 @@ const Authorization = () => {
             password: password,
             role: "user"
         };
-
         try {
-            const response = await fetch('http://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/api/controller/authorization',{
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/user/authorization`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -33,7 +32,6 @@ const Authorization = () => {
                 credentials: "include",
             });
             if (response.ok) {
-                localStorage.setItem("user", login)
                 navigate("/flats");
             } else if(response.status === 401) {
                 setServerResponse("Неверный логин или пароль");
