@@ -50,7 +50,6 @@ const AddHouse = () => {
 
     const validateForm = () => {
         const validationErrors = {
-            name: formData.name === "",
             year: !(formData.year && formData.year > 0 && formData.year <= 681),
             numberOfFloors: !(formData.numberOfFloors && formData.numberOfFloors > 0 && formData.numberOfFloors <= 80),
         };
@@ -99,15 +98,10 @@ const AddHouse = () => {
                     <div>
                         <input
                             name="name"
-                            placeholder="Name (не может быть пустым)"
+                            placeholder="Name"
                             value={formData.name}
                             onChange={handleChange}
                         />
-                        {errors.name && (
-                            <div className="error-field">
-                                Имя не может быть пустым
-                            </div>
-                        )}
                     </div>
                     <div>
                         <input

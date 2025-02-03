@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import HeaderApp from "../HeaderApp";
+import {useParams} from "react-router-dom";
 
-const AddFlat = () => {
+const EditFlat = () => {
+    const { id } = useParams();
     const login = localStorage.getItem("login");
     const [formData, setFormData] = useState({
         name: "",
@@ -32,12 +34,12 @@ const AddFlat = () => {
     useEffect(() => {
         fetch(
             `${process.env.REACT_APP_BASE_URL}/house`,
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             }
-        }
         )
             .then((response) => response.json())
             .then((data) => {
@@ -48,16 +50,44 @@ const AddFlat = () => {
             );
         fetch(
             `${process.env.REACT_APP_BASE_URL}/coordinates`,
-        {
-            method: 'GET',
-            headers: {
+            {
+                method: 'GET',
+                headers: {
                     'Content-Type': 'application/json',
+                }
             }
-        }
         )
             .then((response) => response.json())
             .then((data) => {
                 setCoordinatesData(data);
+            })
+            .catch((error) =>
+                console.error("Ошибка при загрузке данных:", error)
+            );
+        fetch(
+            `${process.env.REACT_APP_BASE_URL}/flat/getId?id=${id}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        )
+            .then(async response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (!data) {
+                    throw new Error('Пустой ответ от сервера');
+                }
+                setFormData({
+                        ...data,
+                        coordinatesId: 0,
+                        houseId: 0,
+                        login: login,
+                    }
+                );
             })
             .catch((error) =>
                 console.error("Ошибка при загрузке данных:", error)
@@ -207,9 +237,9 @@ const AddFlat = () => {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/flat`,
+                `${process.env.REACT_APP_BASE_URL}/flat?id=${id}`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -402,7 +432,7 @@ const AddFlat = () => {
                         <div className="error-field">{errors.houseNumberOfFloors}</div>
                     )}
 
-                    <button type="submit">Добавить</button>
+                    <button type="submit">Изменить</button>
                     <div>{serverResponse}</div>
                 </form>
             </div>
@@ -410,4 +440,4 @@ const AddFlat = () => {
     );
 };
 
-export default AddFlat;
+export default EditFlat;

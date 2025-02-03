@@ -1,66 +1,92 @@
-import React, { useMemo } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import { useTable, usePagination } from 'react-table';
+import { useNavigate } from 'react-router-dom';
 import HeaderApp from "../HeaderApp"
 
+
 const Flats = () => {
-    const data = useMemo(() => [
-        {
-            id: 1,
-            name: "Stud",
-            coordinate_x: 3,
-            coordinate_y: 2,
-            creationDate: "2024-01-01",
-            area: "sdgsdgsdggdsf",
-            price: 1000000,
-            balcony: "Есть",
-            timeToMetroOnFoot: 10,
-            numberOfRooms: 3,
-            furnish: "ssdsgsdgd",
-            view: "ssdggdd",
-            transport: "sdgsdgsd",
-            house_name: "ssdgsdgd",
-            house_year: 1999,
-            house_numberOfFloors: 5,
-        },
-        {
-            id: 2,
-            name: "Stud",
-            coordinate_x: 4,
-            coordinate_y: 2,
-            creationDate: "2024-01-01",
-            area: "f",
-            price: 1000000,
-            balcony: "Есть",
-            timeToMetroOnFoot: 10,
-            numberOfRooms: 3,
-            furnish: "sd",
-            view: "sd",
-            transport: "sd",
-            house_name: "sd",
-            house_year: 1999,
-            house_numberOfFloors: 5,
-        },
+    const userRole = localStorage.getItem("role");
+    const login = localStorage.getItem("login");
+    const [flatsData, setFlatsData] = useState();
+    useEffect(() => {
+        fetch(
+            `${process.env.REACT_APP_BASE_URL}/flat`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                setFlatsData(data);
+            })
+            .catch((error) =>
+                console.error("Ошибка при загрузке данных:", error)
+            );
+    }, []);
+    const navigate = useNavigate();
+    const handleEdit = (id, owner) => {
+        if (owner === login || userRole === "ADMIN") {
+            navigate(`/edit/${id}`)
+        }
+    };
 
+    const handleDelete = async (id, owner) => {
+        if (owner === login || userRole === "ADMIN") {
+            try {
+                await fetch(`${process.env.REACT_APP_BASE_URL}/flat/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
 
-    ], []);
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/flat`);
+                const data = await response.json();
+                setFlatsData(data);
+            } catch (error) {
+                console.error('Ошибка при удалении:', error);
+            }
+        }
+    };
+
 
     const columns = useMemo(() => [
         { Header: 'id', accessor: 'id' },
+        { Header: 'owner', accessor: 'owner'},
         { Header: 'name', accessor: 'name' },
-        { Header: 'coordinate-x', accessor: 'coordinate_x' },
-        { Header: 'coordinate-y', accessor: 'coordinate_y' },
+        { Header: 'coordinate-x', accessor: 'coordinateX' },
+        { Header: 'coordinate-y', accessor: 'coordinateY' },
         { Header: 'creationDate', accessor: 'creationDate' },
         { Header: 'area', accessor: 'area' },
+        { Header: 'numberOfRooms', accessor: 'numberOfRooms'},
         { Header: 'price', accessor: 'price' },
-        { Header: 'balcony', accessor: 'balcony' },
+        { Header: 'balcony', accessor: 'balcony', Cell: ({ value }) => value ? 'Есть' : 'Нет' },
         { Header: 'timeToMetroOnFoot', accessor: 'timeToMetroOnFoot' },
-        { Header: 'numberOfRooms', accessor: 'numberOfRooms' },
         { Header: 'furnish', accessor: 'furnish' },
         { Header: 'view', accessor: 'view' },
         { Header: 'transport', accessor: 'transport' },
-        { Header: 'house-name', accessor: 'house_name' },
-        { Header: 'house-year', accessor: 'house_year' },
-        { Header: 'house-numberOfFloors', accessor: 'house_numberOfFloors' },
+        { Header: 'house-name', accessor: 'houseName' },
+        { Header: 'house-year', accessor: 'houseYear' },
+        { Header: 'house-numberOfFloors', accessor: 'houseNumberOfFloors' },
+        {
+            Header: 'Изменить',
+            Cell: ({ row }) => (
+                <button onClick={() => handleEdit(row.original.id, row.original.owner)} className="edit-button">
+                    Изменить
+                </button>
+            )
+        },
+        {
+            Header: 'Удалить',
+            Cell: ({ row }) => (
+                <button onClick={() => handleDelete(row.original.id, row.original.owner)} className="delete-button">
+                    Удалить
+                </button>
+            )
+        }
     ], []);
 
     const {
@@ -76,7 +102,7 @@ const Flats = () => {
         state,
         prepareRow,
     } = useTable(
-        { columns, data, initialState: { pageIndex: 0, pageSize: 10 } },
+        { columns, data: flatsData ?? [], initialState: { pageIndex: 0, pageSize: 15 } },
         usePagination
     );
 

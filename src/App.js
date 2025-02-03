@@ -9,6 +9,7 @@ import ApplicationsAdmin from "./components/ApplicationsAdmin";
 import AddFlat from "./components/entity/AddFlat";
 import AddHouse from "./components/entity/AddHouse";
 import AddCoordinate from "./components/entity/AddCoordinate";
+import EditFlat from "./components/entity/EditFlat";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -22,7 +23,8 @@ const router = createBrowserRouter(
                 <Route path="/flats" element={<Flats />} />
                 <Route path="/addFlat" element={<AddFlat/>}/>
                 <Route path="/addHouse" element={<AddHouse/>}/>
-                <Route path="addCoordinate" element={<AddCoordinate/>}/>
+                <Route path="/addCoordinate" element={<AddCoordinate/>}/>
+                <Route path="/edit/:id" element={<EditFlat/>}/>
             </Route>
         </Route>
     )

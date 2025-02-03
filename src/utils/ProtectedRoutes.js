@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoutes = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
-    const [loading, setLoading] = useState(true); // Для индикатора загрузки
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const checkSession = async () => {
@@ -17,9 +17,12 @@ const ProtectedRoutes = () => {
                 );
 
                 if (response.ok) {
-                    const isAuthorized = await response.text();
+                    const data = await response.json();
+                    const role = data.role;
+                    const login = data.login;
                     setIsAuthenticated(true)
-                    localStorage.setItem("login", isAuthorized)
+                    localStorage.setItem("login", login);
+                    localStorage.setItem("role", role);
                 } else {
                     setIsAuthenticated(false);
                 }
@@ -27,7 +30,7 @@ const ProtectedRoutes = () => {
                 console.error("Ошибка проверки авторизации:", error);
                 setIsAuthenticated(false);
             } finally {
-                setLoading(false); // Завершение загрузки
+                setLoading(false);
             }
         };
 

@@ -42,7 +42,7 @@ const AddCoordinate = () => {
 
         const validationErrors = {
             x: formData.x === "",
-            y: formData.y === "",
+            y: (formData.y > 965 || formData.y === ""),
         };
 
         if (validationErrors.x || validationErrors.y) {
