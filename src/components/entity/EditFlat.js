@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import HeaderApp from "../HeaderApp";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const EditFlat = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const login = localStorage.getItem("login");
+    const role = localStorage.getItem("role");
     const [formData, setFormData] = useState({
+        id: 0,
         name: "",
         coordinatesId: 0,
         coordinateX: "",
@@ -22,7 +25,6 @@ const EditFlat = () => {
         houseName: "",
         houseYear: null,
         houseNumberOfFloors: null,
-        login: login,
     });
 
     const [housesData, setHousesData] = useState();
@@ -75,17 +77,20 @@ const EditFlat = () => {
         )
             .then(async response => {
                 if (!response.ok) {
+                    navigate("/flats");
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
                 if (!data) {
                     throw new Error('Пустой ответ от сервера');
                 }
+                if (data.owner !== login && role !== "ADMIN") {
+                    navigate("/flats")
+                }
                 setFormData({
                         ...data,
                         coordinatesId: 0,
                         houseId: 0,
-                        login: login,
                     }
                 );
             })
@@ -237,7 +242,7 @@ const EditFlat = () => {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/flat?id=${id}`,
+                `${process.env.REACT_APP_BASE_URL}/flat`,
                 {
                     method: "PUT",
                     headers: {
@@ -253,6 +258,7 @@ const EditFlat = () => {
             } else {
                 setServerResponse("Ошибка отправки");
             }
+            navigate("/flats");
         } catch (error) {
             console.error("Ошибка:", error);
             alert("Произошла ошибка при отправке запроса");

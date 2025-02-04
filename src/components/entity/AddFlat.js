@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import HeaderApp from "../HeaderApp";
 
 const AddFlat = () => {
@@ -22,7 +22,6 @@ const AddFlat = () => {
         houseNumberOfFloors: null,
         login: login,
     });
-
     const [housesData, setHousesData] = useState();
     const [coordinatesData, setCoordinatesData] = useState();
 

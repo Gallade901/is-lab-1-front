@@ -1,5 +1,5 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import { useTable, usePagination } from 'react-table';
+import React, {useEffect, useMemo, useState, useRef} from 'react';
+import { useTable, usePagination } from 'react-table'; // Исправленный импорт
 import { useNavigate } from 'react-router-dom';
 import HeaderApp from "../HeaderApp"
 
@@ -8,23 +8,63 @@ const Flats = () => {
     const userRole = localStorage.getItem("role");
     const login = localStorage.getItem("login");
     const [flatsData, setFlatsData] = useState();
+    const [reconnectAttempts, setReconnectAttempts] = useState(0);
+    const wsRef = useRef(null);
+    const [nameFilter, setNameFilter] = useState("");
+    const [houseNameFilter, setHouseNameFilter] = useState("");
     useEffect(() => {
-        fetch(
-            `${process.env.REACT_APP_BASE_URL}/flat`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
+        const RECONNECT_DELAY = 1000;
+        const MAX_RECONNECT_ATTEMPTS = 10;
+
+        const startReconnect = () => {
+            setTimeout(() => {
+                if (reconnectAttempts <= MAX_RECONNECT_ATTEMPTS) {
+                    wsRef.current = new WebSocket(`ws://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/flat`);
+
+                    wsRef.current.onopen = () => {
+                        console.log(`Успешное переподключение (попытка ${reconnectAttempts + 1})`);
+                        setReconnectAttempts(0);
+                    };
+
+                    wsRef.current.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            setFlatsData(data);
+                        } catch (error) {
+                            console.error('Ошибка при обработке сообщения:', error);
+                        }
+                    };
+
+                    wsRef.current.onerror = (error) => {
+                        console.error('Ошибка при переподключении:', error);
+                        setReconnectAttempts(prev => prev + 1);
+                        startReconnect();
+                    };
+
+                    wsRef.current.onclose = (event) => {
+                        if (!event.wasClean) {
+                            console.log('Соединение было прервано неожиданно');
+                            setReconnectAttempts(prev => prev + 1);
+                            startReconnect();
+                        } else {
+                            console.log('Соединение было закрыто чисто');
+                        }
+                    };
+                } else {
+                    console.error('Превышено максимальное количество попыток переподключения');
+
                 }
+            }, RECONNECT_DELAY * Math.pow(2, reconnectAttempts));
+        };
+
+        startReconnect();
+
+        return () => {
+            if (wsRef.current) {
+                wsRef.current.close();
             }
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                setFlatsData(data);
-            })
-            .catch((error) =>
-                console.error("Ошибка при загрузке данных:", error)
-            );
+        };
+
     }, []);
     const navigate = useNavigate();
     const handleEdit = (id, owner) => {
@@ -52,11 +92,18 @@ const Flats = () => {
         }
     };
 
+    const filteredData = useMemo(() => {
+        if (!flatsData) return [];
+        return flatsData.filter(flat =>
+            flat.name.toLowerCase().includes(nameFilter.toLowerCase()) &&
+            flat.houseName.toLowerCase().includes(houseNameFilter.toLowerCase())
+        );
+    }, [flatsData, nameFilter, houseNameFilter]);
 
     const columns = useMemo(() => [
         { Header: 'id', accessor: 'id' },
         { Header: 'owner', accessor: 'owner'},
-        { Header: 'name', accessor: 'name' },
+        { Header: 'name', accessor: 'name'},
         { Header: 'coordinate-x', accessor: 'coordinateX' },
         { Header: 'coordinate-y', accessor: 'coordinateY' },
         { Header: 'creationDate', accessor: 'creationDate' },
@@ -102,8 +149,8 @@ const Flats = () => {
         state,
         prepareRow,
     } = useTable(
-        { columns, data: flatsData ?? [], initialState: { pageIndex: 0, pageSize: 15 } },
-        usePagination
+        { columns, data: filteredData, initialState: { pageIndex: 0, pageSize: 15 }},
+        usePagination,
     );
 
     const { pageIndex } = state;
@@ -111,7 +158,21 @@ const Flats = () => {
     return (
 
         <div className="flats-table-wrapper">
-            <HeaderApp />
+            <HeaderApp/>
+            <div className="filters">
+                <input
+                    type="text"
+                    placeholder="Фильтр по name"
+                    value={nameFilter}
+                    onChange={(e) => setNameFilter(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Фильтр по house-name"
+                    value={houseNameFilter}
+                    onChange={(e) => setHouseNameFilter(e.target.value)}
+                />
+            </div>
             <div className="flats-table-wr">
                 <table {...getTableProps()} className="flats-table">
                     <thead>
@@ -142,7 +203,7 @@ const Flats = () => {
                     Previous
                 </button>
                 <span>Page{' '}
-                  <strong>
+                    <strong>
                     {pageIndex + 1} of {pageOptions.length}
                   </strong>{' '}
                 </span>

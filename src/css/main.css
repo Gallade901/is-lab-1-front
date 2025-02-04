@@ -135,3 +135,18 @@ body {
 .error-field {
     color: red;
 }
+
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+.filters input {
+    padding: 8px;
+    border: 1px solid #4677d3;
+    border-radius: 12px;
+    font-size: 14px;
+}

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import HeaderApp from "./HeaderApp";
+import {useNavigate} from "react-router-dom";
 
 const ApplicationsAdmin = () => {
+    const role = localStorage.getItem("role");
+    const navigate = useNavigate();
     const [applications, setApplications] = useState([]);
     const fetchApplications = async () => {
         try {
@@ -49,6 +52,10 @@ const ApplicationsAdmin = () => {
     };
 
     useEffect(() => {
+        if (role !== "ADMIN") {
+            navigate("/flats");
+            alert("Доступ к заявкам есть только у админa");
+        }
         fetchApplications();
     }, []);
 
