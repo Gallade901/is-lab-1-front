@@ -150,3 +150,24 @@ body {
     border-radius: 12px;
     font-size: 14px;
 }
+
+.full {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.full input {
+    padding: 5px;
+    border: 1px solid #4677d3;
+    border-radius: 12px;
+    font-size: 14px;
+    margin: 8px;
+}
+.full button {
+    padding: 10px;
+    border: 0;
+    flex-grow: 1;
+    background-color: azure;
+    border-radius: 15px;
+    margin: 5px;
+}

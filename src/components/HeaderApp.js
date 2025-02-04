@@ -45,6 +45,7 @@ const HeaderApp = () => {
                     <option value="/addHouse">Добавить дом</option>
                     <option value="/houses">Дома</option>
                     <option value="/coordinates">Координаты</option>
+                    <option value="/functions">Функции</option>
                 </select>
             </div>
 

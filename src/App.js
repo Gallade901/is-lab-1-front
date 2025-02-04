@@ -20,6 +20,7 @@ import Houses from "./components/entity/house/Houses";
 import EditHouse from "./components/entity/house/EditHouse";
 import Coordinates from "./components/entity/coordinate/Coordinates";
 import EditCoordinate from "./components/entity/coordinate/EditCoordinate";
+import Functions from "./components/Functions";
 
 
 
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
                 <Route path="/editHouse/:id" element={<EditHouse/>} />
                 <Route path="/coordinates" element={<Coordinates/>} />
                 <Route path="/editCoordinate/:id" element={<EditCoordinate/>} />
+                <Route path="/functions" element={<Functions/>} />
             </Route>
         </Route>
     )
