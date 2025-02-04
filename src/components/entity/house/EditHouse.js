@@ -1,16 +1,52 @@
-import React, { useState } from "react";
-import HeaderApp from "../HeaderApp";
+import React, {useEffect, useState} from "react";
+import HeaderApp from "../../HeaderApp";
+import {useNavigate, useParams} from "react-router-dom";
 
-const AddHouse = () => {
-    const login = localStorage.getItem("login")
+const EditHouse = () => {
+    const login = localStorage.getItem("login");
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const role = localStorage.getItem("role");
     const [formData, setFormData] = useState({
-        name: "", // Поле может быть пустым
+        id: 0,
+        name: "",
         year: "",
         numberOfFloors: "",
-        login: login,
     });
 
     const [serverResponse, setServerResponse] = useState("");
+
+    useEffect(() => {
+        fetch(
+            `${process.env.REACT_APP_BASE_URL}/house/getId?id=${id}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        )
+            .then(async response => {
+                if (!response.ok) {
+                    navigate("/houses");
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (!data) {
+                    throw new Error('Пустой ответ от сервера');
+                }
+                if (data.owner !== login && role !== "ADMIN") {
+                    navigate("/houses")
+                }
+                setFormData({
+                        ...data,
+                    }
+                );
+            })
+            .catch((error) =>
+                console.error("Ошибка при загрузке данных:", error)
+            );
+    }, []);
 
     const [errors, setErrors] = useState({
         name: false,
@@ -70,7 +106,7 @@ const AddHouse = () => {
             const response = await fetch(
                 `${process.env.REACT_APP_BASE_URL}/house`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -84,6 +120,7 @@ const AddHouse = () => {
             } else {
                 setServerResponse("Ошибка отправки");
             }
+            navigate("/houses");
         } catch (error) {
             console.error("Ошибка:", error);
             alert("Произошла ошибка при отправке запроса");
@@ -131,7 +168,7 @@ const AddHouse = () => {
                             </div>
                         )}
                     </div>
-                    <button type="submit">Добавить</button>
+                    <button type="submit">Изменить</button>
                     <div>{serverResponse}</div>
                 </form>
             </div>
@@ -139,4 +176,4 @@ const AddHouse = () => {
     );
 };
 
-export default AddHouse;
+export default EditHouse;

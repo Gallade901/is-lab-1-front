@@ -1,9 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import HeaderApp from "../HeaderApp";
+import React, { useState, useEffect } from "react";
+import HeaderApp from "../../HeaderApp";
+import {useNavigate, useParams} from "react-router-dom";
 
-const AddFlat = () => {
+const EditFlat = () => {
+    const navigate = useNavigate();
+    const { id } = useParams();
     const login = localStorage.getItem("login");
+    const role = localStorage.getItem("role");
     const [formData, setFormData] = useState({
+        id: 0,
         name: "",
         coordinatesId: 0,
         coordinateX: "",
@@ -20,8 +25,8 @@ const AddFlat = () => {
         houseName: "",
         houseYear: null,
         houseNumberOfFloors: null,
-        login: login,
     });
+
     const [housesData, setHousesData] = useState();
     const [coordinatesData, setCoordinatesData] = useState();
 
@@ -31,12 +36,12 @@ const AddFlat = () => {
     useEffect(() => {
         fetch(
             `${process.env.REACT_APP_BASE_URL}/house`,
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             }
-        }
         )
             .then((response) => response.json())
             .then((data) => {
@@ -47,16 +52,47 @@ const AddFlat = () => {
             );
         fetch(
             `${process.env.REACT_APP_BASE_URL}/coordinates`,
-        {
-            method: 'GET',
-            headers: {
+            {
+                method: 'GET',
+                headers: {
                     'Content-Type': 'application/json',
+                }
             }
-        }
         )
             .then((response) => response.json())
             .then((data) => {
                 setCoordinatesData(data);
+            })
+            .catch((error) =>
+                console.error("Ошибка при загрузке данных:", error)
+            );
+        fetch(
+            `${process.env.REACT_APP_BASE_URL}/flat/getId?id=${id}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }
+        )
+            .then(async response => {
+                if (!response.ok) {
+                    navigate("/flats");
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (!data) {
+                    throw new Error('Пустой ответ от сервера');
+                }
+                if (data.owner !== login && role !== "ADMIN") {
+                    navigate("/flats")
+                }
+                setFormData({
+                        ...data,
+                        coordinatesId: 0,
+                        houseId: 0,
+                    }
+                );
             })
             .catch((error) =>
                 console.error("Ошибка при загрузке данных:", error)
@@ -208,7 +244,7 @@ const AddFlat = () => {
             const response = await fetch(
                 `${process.env.REACT_APP_BASE_URL}/flat`,
                 {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -222,6 +258,7 @@ const AddFlat = () => {
             } else {
                 setServerResponse("Ошибка отправки");
             }
+            navigate("/flats");
         } catch (error) {
             console.error("Ошибка:", error);
             alert("Произошла ошибка при отправке запроса");
@@ -401,7 +438,7 @@ const AddFlat = () => {
                         <div className="error-field">{errors.houseNumberOfFloors}</div>
                     )}
 
-                    <button type="submit">Добавить</button>
+                    <button type="submit">Изменить</button>
                     <div>{serverResponse}</div>
                 </form>
             </div>
@@ -409,4 +446,4 @@ const AddFlat = () => {
     );
 };
 
-export default AddFlat;
+export default EditFlat;

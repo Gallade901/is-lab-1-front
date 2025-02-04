@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState, useRef} from 'react';
 import { useTable, usePagination } from 'react-table'; // Исправленный импорт
 import { useNavigate } from 'react-router-dom';
-import HeaderApp from "../HeaderApp"
+import HeaderApp from "../../HeaderApp"
 
 
 const Flats = () => {
@@ -19,7 +19,7 @@ const Flats = () => {
         const startReconnect = () => {
             setTimeout(() => {
                 if (reconnectAttempts <= MAX_RECONNECT_ATTEMPTS) {
-                    wsRef.current = new WebSocket(`ws://localhost:21751/IS-lab-1-back-1.0-SNAPSHOT/flat`);
+                    wsRef.current = new WebSocket(`${process.env.REACT_APP_WS_URL}/flat`);
 
                     wsRef.current.onopen = () => {
                         console.log(`Успешное переподключение (попытка ${reconnectAttempts + 1})`);
@@ -69,7 +69,7 @@ const Flats = () => {
     const navigate = useNavigate();
     const handleEdit = (id, owner) => {
         if (owner === login || userRole === "ADMIN") {
-            navigate(`/edit/${id}`)
+            navigate(`/editFlat/${id}`)
         }
     };
 

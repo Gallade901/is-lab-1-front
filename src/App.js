@@ -8,14 +8,18 @@ import {
 } from "react-router-dom";
 import Authorization from "./components/Authorization";
 import Registration from "./components/Registration";
-import Flats from "./components/entity/Flats";
+import Flats from "./components/entity/flat/Flats";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import PublicRoutes from "./utils/PublicRoutes";
 import ApplicationsAdmin from "./components/ApplicationsAdmin";
-import AddFlat from "./components/entity/AddFlat";
-import AddHouse from "./components/entity/AddHouse";
-import AddCoordinate from "./components/entity/AddCoordinate";
-import EditFlat from "./components/entity/EditFlat";
+import AddFlat from "./components/entity/flat/AddFlat";
+import AddHouse from "./components/entity/house/AddHouse";
+import AddCoordinate from "./components/entity/coordinate/AddCoordinate";
+import EditFlat from "./components/entity/flat/EditFlat";
+import Houses from "./components/entity/house/Houses";
+import EditHouse from "./components/entity/house/EditHouse";
+import Coordinates from "./components/entity/coordinate/Coordinates";
+import EditCoordinate from "./components/entity/coordinate/EditCoordinate";
 
 
 
@@ -37,7 +41,11 @@ const router = createBrowserRouter(
                 <Route path="/addFlat" element={<AddFlat />} />
                 <Route path="/addHouse" element={<AddHouse />} />
                 <Route path="/addCoordinate" element={<AddCoordinate />} />
-                <Route path="/edit/:id" element={<EditFlat />} />
+                <Route path="/editFlat/:id" element={<EditFlat />} />
+                <Route path="/houses" element={<Houses/> } />
+                <Route path="/editHouse/:id" element={<EditHouse/>} />
+                <Route path="/coordinates" element={<Coordinates/>} />
+                <Route path="/editCoordinate/:id" element={<EditCoordinate/>} />
             </Route>
         </Route>
     )
