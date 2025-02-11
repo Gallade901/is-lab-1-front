@@ -40,7 +40,8 @@ const EditFlat = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                credentials: "include",
             }
         )
             .then((response) => response.json())
@@ -56,7 +57,8 @@ const EditFlat = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                credentials: "include",
             }
         )
             .then((response) => response.json())
@@ -72,7 +74,8 @@ const EditFlat = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                credentials: "include",
             }
         )
             .then(async response => {
@@ -249,6 +252,7 @@ const EditFlat = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(formData),
+                    credentials: "include",
                 }
             );
 

@@ -20,7 +20,8 @@ const Functions = () => {
         clearMessage();
         try {
             await axios.post(`${process.env.REACT_APP_BASE_URL}/functions/view`, null, {
-                params: { view: view }
+                params: { view: view },
+                withCredentials: true
             });
             setMessageView('Функция успешно выполнена');
         } catch (error) {
@@ -32,7 +33,8 @@ const Functions = () => {
         clearMessage();
         try {
             const {data} = await axios.post(`${process.env.REACT_APP_BASE_URL}/functions/prefix`, null, {
-                params: { prefix: prefix }
+                params: { prefix: prefix },
+                withCredentials: true
             });
             setFlats(data);
         } catch (error) {
@@ -44,7 +46,8 @@ const Functions = () => {
         event.preventDefault();
         clearMessage();
         try {
-            const {data} = await axios.get(`${process.env.REACT_APP_BASE_URL}/functions/cheaper`, null, {
+            const {data} = await axios.get(`${process.env.REACT_APP_BASE_URL}/functions/cheaper`, {
+                withCredentials: true
             });
             if (data === "Квартир с балконом нет") {
                 setMessageCheaper(data);
@@ -61,7 +64,8 @@ const Functions = () => {
         event.preventDefault();
         clearMessage();
         try {
-            const {data} = await axios.get(`${process.env.REACT_APP_BASE_URL}/functions/metro`, null, {
+            const {data} = await axios.get(`${process.env.REACT_APP_BASE_URL}/functions/metro`, {
+                withCredentials: true
             });
             setFlats(data);
         } catch (error) {

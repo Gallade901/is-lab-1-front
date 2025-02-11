@@ -78,12 +78,10 @@ const Houses = () => {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    credentials: "include",
                 });
 
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/house`);
-                const data = await response.json();
-                setHousesData(data);
             } catch (error) {
                 console.error('Ошибка при удалении:', error);
             }

@@ -78,12 +78,9 @@ const Coordinates = () => {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    credentials: "include",
                 });
-
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/coordinates`);
-                const data = await response.json();
-                setCoordinatesData(data);
             } catch (error) {
                 console.error('Ошибка при удалении:', error);
             }

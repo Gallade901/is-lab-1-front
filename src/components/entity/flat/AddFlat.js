@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import HeaderApp from "../../HeaderApp";
 
 const AddFlat = () => {
@@ -35,7 +35,8 @@ const AddFlat = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            credentials: "include",
         }
         )
             .then((response) => response.json())
@@ -51,7 +52,8 @@ const AddFlat = () => {
             method: 'GET',
             headers: {
                     'Content-Type': 'application/json',
-            }
+            },
+            credentials: "include",
         }
         )
             .then((response) => response.json())
@@ -213,6 +215,8 @@ const AddFlat = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(formData),
+                    credentials: "include",
+                    
                 }
             );
 

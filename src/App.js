@@ -28,7 +28,7 @@ const ProtectedRoutesWrapper = () => {
     const location = useLocation();
     return <ProtectedRoutes key={location.pathname} />;
 };
-
+const basename = document.querySelector('base')?.getAttribute('href') ?? '/'
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/">
@@ -50,7 +50,7 @@ const router = createBrowserRouter(
                 <Route path="/functions" element={<Functions/>} />
             </Route>
         </Route>
-    )
+    ), {basename}
 );
 
 const App = () => {

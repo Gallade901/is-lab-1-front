@@ -22,7 +22,8 @@ const EditCoordinate = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                credentials: "include",
             }
         )
             .then(async response => {

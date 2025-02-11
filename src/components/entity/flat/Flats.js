@@ -80,12 +80,10 @@ const Flats = () => {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    credentials: "include",
                 });
-
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/flat`);
-                const data = await response.json();
-                setFlatsData(data);
+                
             } catch (error) {
                 console.error('Ошибка при удалении:', error);
             }

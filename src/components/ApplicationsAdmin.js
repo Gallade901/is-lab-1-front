@@ -8,13 +8,11 @@ const ApplicationsAdmin = () => {
     const [applications, setApplications] = useState([]);
     const fetchApplications = async () => {
         try {
-            const response = await fetch(
-                `${process.env.REACT_APP_BASE_URL}/user/applications`,
-                {
-                    method: "GET",
-                    credentials: "include",
+            const response = await axios.get(process.env.REACT_APP_BASE_URL + '/matches', {
+                headers: {
+                    'Content-Type': 'application/json',
                 }
-            );
+            });
 
             if (response.ok) {
                 const data = await response.json(); // Парсим JSON-ответ
